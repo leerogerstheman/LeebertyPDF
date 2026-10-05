@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' lumen-file: lumen-app:; script-src 'self' lumen-file: lumen-app: 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' lumen-app:; img-src 'self' data: blob: lumen-file: lumen-app:; font-src 'self' data: lumen-file: lumen-app:; connect-src 'self' data: blob: lumen-file: lumen-app:; worker-src 'self' blob: lumen-file: lumen-app:; media-src 'self' blob: lumen-file:; object-src 'none'; frame-src 'self' blob: data:;"
+    />
+    <title>LeebertyPDF</title>
+    <link rel="stylesheet" href="./vendor/pdfjs/pdf_viewer.css" />
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/components.css" />
+    <link rel="stylesheet" href="./styles/viewer.css" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header id="chrome" class="chrome">
+        <div class="titlebar" id="titlebar">
+          <div class="titlebar-left">
+            <button class="icon-btn brand" id="btn-menu" title="主菜单 (Alt)" aria-label="主菜单">
+              <span class="brand-mark" aria-hidden="true"><img src="data:image/png;base64,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" alt="" /></span>
+            </button>
+            <nav class="tabstrip" id="tabstrip" role="tablist"></nav>
+          </div>
+          <div class="titlebar-drag" id="drag-region"></div>
+          <div class="titlebar-right">
+            <!-- The palette used to share the magnifier with the find button, which
+                 put two identical search icons on screen at once. It now carries a
+                 "run a command" mark instead: a rounded field with an enter arrow. -->
+            <button class="icon-btn" id="btn-command" title="命令面板 (Ctrl+K)" aria-label="命令面板">
+              <svg viewBox="0 0 24 24" class="ic" aria-hidden="true"><rect x="2.6" y="6.6" width="18.8" height="10.8" rx="4.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 12h4.4m0 0-2.1-2.1M13.8 12l-2.1 2.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="win-controls">
+              <button class="icon-btn win" id="btn-min" title="最小化" aria-label="最小化">
+                <svg viewBox="0 0 12 12" class="ic-sm"><path d="M2 6h8" stroke="currentColor" stroke-width="1.1"/></svg>
+              </button>
+              <button class="icon-btn win" id="btn-max" title="最大化/还原" aria-label="最大化">
+                <svg viewBox="0 0 12 12" class="ic-sm"><rect x="2.4" y="2.4" width="7.2" height="7.2" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+              </button>
+              <button class="icon-btn win close" id="btn-close" title="关闭" aria-label="关闭">
+                <svg viewBox="0 0 12 12" class="ic-sm"><path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" stroke-width="1.3"/></svg>
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="toolbar" id="toolbar">
+          <div class="tb-group">
+            <button class="icon-btn" id="btn-open" title="打开 (Ctrl+O)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4l2 2.4h7A1.5 1.5 0 0 1 19 10v7a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 3 17z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-sidebar" title="侧边栏 (F4)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M3.5 5.5h17v13h-17z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 5.5v13" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+          </div>
+
+          <div class="tb-group tb-pager">
+            <button class="icon-btn" id="btn-page-prev" title="上一页 (PgUp)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M7 14.5 12 9.5l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <label class="pager" title="跳转到页码 (Ctrl+G)">
+              <input id="page-input" class="num-input" type="text" inputmode="numeric" value="1" aria-label="页码" />
+              <span class="pager-total" id="page-total">/ 0</span>
+            </label>
+            <button class="icon-btn" id="btn-page-next" title="下一页 (PgDn)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M7 9.5 12 14.5l5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="tb-sep"></span>
+            <button class="icon-btn" id="btn-zoom-out" title="缩小 (Ctrl+-)">
+              <svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.4 11h5.2M15.6 15.6 21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="tb-text" id="btn-zoom" title="缩放 (Ctrl+滚轮)">100%</button>
+            <button class="icon-btn" id="btn-zoom-in" title="放大 (Ctrl+=)">
+              <svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8.4 11h5.2M11 8.4v5.2M15.6 15.6 21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+
+          <div class="tb-spacer"></div>
+
+          <div class="tb-group">
+            <button class="icon-btn" id="btn-rotate-ccw" title="逆时针旋转 (Ctrl+Shift+R)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M4 10a8 8 0 1 1 2.6 8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 5.6V10h4.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-rotate-cw" title="顺时针旋转 (Ctrl+R)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M20 10a8 8 0 1 0-2.6 8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M20 5.6V10h-4.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <span class="tb-sep"></span>
+            <button class="icon-btn" id="btn-highlight" title="高亮 (Ctrl+H)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M5 18h4l10-10-4-4L5 14z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M3.5 20.5h17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-ink" title="自由绘制 (Ctrl+D)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M4 20l3.4-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-erase" title="擦除批注 (E)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M8 19h11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5.5 15.5 12 9l5.5 5.5-4 4H9.2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-hand" title="手形工具 (H) — 拖拽平移">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M8 12V6.6a1.3 1.3 0 0 1 2.6 0V11m0 0V5.4a1.3 1.3 0 0 1 2.6 0V11m0 0V6.6a1.3 1.3 0 0 1 2.6 0V13c0 4-2.2 7-5.6 7S7 17.4 7 14.4v-1.9a1.3 1.3 0 0 1 2.6 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </button>
+            <span class="tb-sep"></span>
+            <button class="icon-btn" id="btn-reflow" title="重排阅读 — 图文重排为单栏 (Ctrl+Shift+E)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M4 6h16M4 10.5h12M4 15h16M4 19.5h9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-find" title="查找 (Ctrl+F)">
+              <svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M15.6 15.6 21 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" id="btn-view" title="视图与工具">
+              <svg viewBox="0 0 24 24" class="ic"><circle cx="5.5" cy="12" r="1.35" fill="currentColor"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/><circle cx="18.5" cy="12" r="1.35" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="findbar" id="findbar" hidden>
+          <div class="findbar-inner">
+            <input id="find-input" class="find-input" type="text" placeholder="查找" aria-label="查找" />
+            <span class="find-counter" id="find-counter">0/0</span>
+            <button class="icon-btn sm" id="find-prev" title="上一个 (Shift+Enter)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M7 14.5 12 9.5l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="icon-btn sm" id="find-next" title="下一个 (Enter)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M7 9.5 12 14.5l5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="tb-sep"></span>
+            <button class="toggle-chip" id="find-case" title="区分大小写">Aa</button>
+            <button class="toggle-chip" id="find-word" title="全字匹配">词</button>
+            <button class="toggle-chip" id="find-diacritics" title="区分变音符号">á</button>
+            <button class="toggle-chip" id="find-highlightall" title="全部高亮">全部</button>
+            <span class="tb-sep"></span>
+            <button class="toggle-chip" id="find-results-toggle" title="结果列表">列表</button>
+            <button class="icon-btn sm" id="find-close" title="关闭 (Esc)">
+              <svg viewBox="0 0 24 24" class="ic"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div class="find-results" id="find-results" hidden></div>
+        </div>
+      </header>
+
+      <div class="body" id="body">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-head">
+            <button class="sidebar-title" id="sidebar-title">缩略图</button>
+          </div>
+          <div class="sidebar-tabs" id="sidebar-tabs" role="tablist" hidden>
+            <button class="sidebar-tab active" data-pane="thumbnails" role="tab">缩略图</button>
+            <button class="sidebar-tab" data-pane="outline" role="tab">目录</button>
+            <button class="sidebar-tab" data-pane="bookmarks" role="tab">书签</button>
+            <button class="sidebar-tab" data-pane="annotations" role="tab">批注</button>
+          </div>
+          <div class="sidebar-body">
+            <div class="pane" id="pane-thumbnails">
+              <div class="thumb-scroll" id="thumb-list"></div>
+            </div>
+            <div class="pane" id="pane-outline" hidden>
+              <div class="outline-scroll" id="outline-list"></div>
+            </div>
+            <div class="pane" id="pane-bookmarks" hidden>
+              <div class="outline-scroll" id="bookmark-list"></div>
+            </div>
+            <div class="pane" id="pane-annotations" hidden>
+              <div class="outline-scroll" id="annot-list"></div>
+            </div>
+          </div>
+        </aside>
+        <div class="sidebar-resizer" id="sidebar-resizer" hidden></div>
+
+        <main class="stage" id="stage">
+          <div class="viewers" id="viewers">
+            <div class="empty-state" id="empty-state">
+              <div class="empty-card">
+                <div class="empty-logo">Leeberty<span>PDF</span></div>
+                <p class="empty-sub">把 PDF 拖进来</p>
+                <div class="empty-actions">
+                  <button class="btn" id="empty-open">打开文件</button>
+                  <button class="btn" id="empty-folder">打开文件夹</button>
+                  <button class="btn" id="empty-recent">最近阅读</button>
+                </div>
+                <div class="empty-recent" id="empty-recent-list"></div>
+              </div>
+            </div>
+          </div>
+          <div class="statusline" id="statusline">
+            <span class="status-item" id="status-progress" hidden>
+              <span class="mini-spinner"></span><span id="status-progress-text"></span>
+            </span>
+            <span class="status-item" id="status-message"></span>
+            <span class="status-spacer"></span>
+            <span class="status-item" id="status-hint"></span>
+          </div>
+          <div class="progress-line" id="progress-line"><span id="progress-fill"></span></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- floating layers -->
+    <div class="menu-popover" id="main-menu" hidden></div>
+    <div class="palette" id="palette" hidden>
+      <div class="palette-box">
+        <input id="palette-input" class="palette-input" type="text" placeholder="输入命令或文件名…" />
+        <div class="palette-list" id="palette-list"></div>
+        <div class="palette-foot"><span><kbd>↑</kbd><kbd>↓</kbd> 选择</span><span><kbd>Enter</kbd> 执行</span><span><kbd>Esc</kbd> 关闭</span></div>
+      </div>
+    </div>
+    <div class="toasts" id="toasts"></div>
+    <div class="modal-root" id="modal-root" hidden></div>
+    <div class="context-menu" id="context-menu" hidden></div>
+    <div class="drop-overlay" id="drop-overlay" hidden><div class="drop-inner">松开鼠标以打开 PDF</div></div>
+    <div class="editor-bar" id="editor-bar" hidden>
+      <span class="editor-label">批注</span>
+      <div class="swatches" id="editor-colors"></div>
+      <label class="editor-size">
+        粗细
+        <input type="range" id="editor-thickness" min="1" max="24" step="1" value="2" class="range" />
+      </label>
+      <label class="editor-size">
+        字号
+        <input type="range" id="editor-fontsize" min="8" max="72" step="1" value="16" class="range" />
+      </label>
+      <button class="chip-btn" id="editor-done">完成</button>
+      <button class="chip-btn" id="editor-delete" title="删除选中的批注">删除选中</button>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

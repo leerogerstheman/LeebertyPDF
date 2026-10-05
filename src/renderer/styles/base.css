@@ -1,0 +1,817 @@
+/* =========================================================================
+   LeebertyPDF — design tokens and layout.
+
+   Minimalism rules used here:
+     · one hairline colour, never a heavy border or a drop shadow on chrome
+     · chrome is the same surface as the paper — separation comes from space
+     · text is the only ornament: 12/13 px, tabular numerals for counters
+     · a single accent colour, used for state and nothing else
+     · the page is the subject: generous margins, quiet shadow, no page border
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* surfaces — two tones only, plus a barely-there wash for the rails */
+  --bg-app: #ffffff;
+  --bg-chrome: #ffffff;
+  --bg-chrome-2: #fafafa;
+  --bg-elev: #ffffff;
+  --bg-elev-2: #f4f4f5;
+  --bg-stage: #f2f2f3;
+  --bg-input: #f6f6f7;
+  --bg-hover: rgba(0, 0, 0, 0.045);
+  --bg-active: rgba(0, 0, 0, 0.08);
+  --bg-selected: rgba(3, 102, 214, 0.09);
+
+  /* ink */
+  --fg: #37383c;
+  --fg-strong: #101114;
+  --fg-muted: #767779;
+  --fg-faint: #a3a4a7;
+  --fg-inverse: #ffffff;
+
+  /* one hairline, nothing stronger */
+  --border: rgba(0, 0, 0, 0.075);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16);
+
+  --accent: #0366d6;
+  --accent-strong: #0256b8;
+  --accent-soft: rgba(3, 102, 214, 0.1);
+  --accent-fg: #ffffff;
+  --danger: #d13438;
+  --warn: #b26a00;
+  --ok: #107c41;
+
+  --find-hit: rgba(255, 214, 0, 0.38);
+  --find-hit-active: rgba(255, 145, 0, 0.5);
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+
+  --font-ui: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei UI", "微软雅黑", system-ui, -apple-system,
+    "Noto Sans SC", sans-serif;
+  --font-mono: "Cascadia Mono", ui-monospace, "Consolas", monospace;
+
+  /* chrome geometry — deliberately thin */
+  --titlebar-h: 34px;
+  --toolbar-h: 40px;
+  --sidebar-w: 244px;
+  --hairline-h: 2px;
+
+  --dur-fast: 90ms;
+  --dur: 150ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* pdf.js viewer hooks — must live on :root to reach everything.
+     --page-margin is authored in page units so gaps scale with the zoom. */
+  --page-margin: 9px auto 4px;
+  --page-border: 0 solid transparent;
+  --pdfViewer-padding-bottom: 24px;
+  --spreadHorizontalWrapped-margin-LR: 0px;
+  --viewer-container-height: 0;
+  --page-bg-color: #ffffff;
+  --user-unit: 1;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-app: #1c1c1e;
+  --bg-chrome: #1c1c1e;
+  --bg-chrome-2: #232325;
+  --bg-elev: #26262a;
+  --bg-elev-2: #2e2e32;
+  --bg-stage: #131315;
+  --bg-input: #2a2a2e;
+  --bg-hover: rgba(255, 255, 255, 0.055);
+  --bg-active: rgba(255, 255, 255, 0.1);
+  --bg-selected: rgba(88, 166, 255, 0.14);
+  --fg: #c9cad0;
+  --fg-strong: #f3f4f6;
+  --fg-muted: #86878e;
+  --fg-faint: #63646a;
+  --fg-inverse: #101114;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18px 52px rgba(0, 0, 0, 0.6);
+  --accent: #58a6ff;
+  --accent-strong: #79b8ff;
+  --accent-soft: rgba(88, 166, 255, 0.13);
+  --accent-fg: #0d1117;
+  --danger: #ff7b72;
+  --warn: #d29922;
+  --ok: #3fb950;
+  --find-hit: rgba(255, 214, 0, 0.3);
+  --find-hit-active: rgba(255, 145, 0, 0.45);
+  --page-bg-color: #ffffff;
+}
+
+html[data-theme="sepia"] {
+  color-scheme: light;
+  --bg-app: #faf6ee;
+  --bg-chrome: #faf6ee;
+  --bg-chrome-2: #f3ede1;
+  --bg-elev: #fffdf8;
+  --bg-elev-2: #efe8da;
+  --bg-stage: #ece4d5;
+  --bg-input: #f4eee2;
+  --bg-hover: rgba(90, 70, 40, 0.055);
+  --bg-active: rgba(90, 70, 40, 0.1);
+  --bg-selected: rgba(150, 100, 30, 0.13);
+  --fg: #443a2a;
+  --fg-strong: #221c12;
+  --fg-muted: #7c6f58;
+  --fg-faint: #a2937a;
+  --border: rgba(90, 70, 40, 0.11);
+  --border-strong: rgba(90, 70, 40, 0.22);
+  --accent: #9a6a1c;
+  --accent-strong: #7d5514;
+  --accent-soft: rgba(154, 106, 28, 0.12);
+  --accent-fg: #fffdf8;
+}
+
+html[data-theme="night"] {
+  color-scheme: dark;
+  --bg-app: #000000;
+  --bg-chrome: #000000;
+  --bg-chrome-2: #0a0a0a;
+  --bg-elev: #101012;
+  --bg-elev-2: #1a1a1c;
+  --bg-stage: #000000;
+  --bg-input: #141416;
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --bg-active: rgba(255, 255, 255, 0.11);
+  --bg-selected: rgba(120, 170, 255, 0.12);
+  --fg: #a8a9ad;
+  --fg-strong: #e8e9ec;
+  --fg-muted: #6f7075;
+  --fg-faint: #4d4e52;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 18px 52px rgba(0, 0, 0, 0.75);
+  --accent: #6cb6ff;
+  --accent-soft: rgba(108, 182, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--fg);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  cursor: default;
+}
+
+body.using-native-cursor,
+body.using-native-cursor * {
+  cursor: auto !important;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg-muted);
+}
+
+.muted {
+  color: var(--fg-muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- chrome */
+.chrome {
+  flex: 0 0 auto;
+  background: var(--bg-chrome);
+  z-index: 40;
+  /* no bottom border: the stage tone difference is enough */
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  height: var(--titlebar-h);
+  padding: 0 6px;
+  gap: 2px;
+  -webkit-app-region: drag;
+}
+
+.titlebar-left,
+.titlebar-right {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  -webkit-app-region: no-drag;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.titlebar-left {
+  flex: 0 1 auto;
+  max-width: calc(100% - 150px);
+}
+
+.titlebar-drag {
+  flex: 1 1 auto;
+  height: 100%;
+  -webkit-app-region: drag;
+  min-width: 20px;
+}
+
+.brand {
+  width: 28px;
+}
+
+/* The mark is the application icon in miniature: a deep navy tile carrying the
+   gothic L. It is an inlined asset (tools/make_icon.py keeps both in sync) so
+   the tile needs no styling of its own. */
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.brand-mark img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  border-radius: 6px;
+}
+
+.win-controls {
+  display: flex;
+}
+
+.win-controls .icon-btn.win {
+  width: 32px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+}
+
+.win-controls .icon-btn.win.close:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------- tabs */
+.tabstrip {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  overflow: hidden auto;
+  scrollbar-width: none;
+  max-width: 100%;
+  -webkit-app-region: no-drag;
+  padding-bottom: 1px;
+}
+
+.tabstrip::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 4px 0 9px;
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  background: transparent;
+  max-width: 190px;
+  min-width: 84px;
+  cursor: default;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.tab:hover {
+  background: var(--bg-hover);
+  color: var(--fg);
+}
+
+.tab.active {
+  background: var(--bg-elev-2);
+  color: var(--fg-strong);
+}
+
+.tab-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.tab.dirty .tab-title::after {
+  content: "·";
+  margin-left: 4px;
+  color: var(--fg-muted);
+}
+
+.tab-close {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.tab:hover .tab-close,
+.tab.active .tab-close {
+  opacity: 0.5;
+}
+
+.tab-close:hover {
+  opacity: 1 !important;
+  background: var(--bg-active);
+}
+
+.tab-close svg {
+  width: 8px;
+  height: 8px;
+}
+
+.tab-spinner {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.4px solid var(--border-strong);
+  border-top-color: var(--accent);
+  animation: spin 700ms linear infinite;
+  flex: 0 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------- toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: var(--toolbar-h);
+  padding: 0 10px;
+  background: var(--bg-chrome);
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.tb-group {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.tb-pager {
+  margin-left: 6px;
+}
+
+/* a separator is a whisper, not a line */
+.tb-sep {
+  width: 1px;
+  height: 15px;
+  background: var(--border);
+  margin: 0 7px;
+  flex: 0 0 auto;
+}
+
+.tb-spacer {
+  flex: 1 1 auto;
+}
+
+.icon-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--fg-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  display: grid;
+  place-items: center;
+  cursor: default;
+  padding: 0;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+  flex: 0 0 auto;
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.icon-btn:active:not(:disabled) {
+  background: var(--bg-active);
+}
+
+.icon-btn:disabled {
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.icon-btn.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.icon-btn.sm {
+  width: 24px;
+  height: 24px;
+}
+
+/* one stroke weight everywhere: 1.5 */
+.ic {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+.ic-sm {
+  width: 11px;
+  height: 11px;
+  display: block;
+}
+
+.tb-text {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--fg-muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  min-width: 48px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: var(--radius);
+  cursor: default;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.tb-text:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-strong);
+}
+
+.tb-text:disabled {
+  opacity: 0.28;
+}
+
+/* the page field is text, not a control */
+.pager {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 0 2px;
+  height: 28px;
+  align-items: center;
+}
+
+.num-input {
+  width: 30px;
+  border: none;
+  background: transparent;
+  color: var(--fg-strong);
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+  padding: 0;
+  border-radius: 3px;
+}
+
+.num-input:focus {
+  background: var(--bg-input);
+  box-shadow: 0 0 0 1px var(--accent);
+  padding: 0 3px;
+}
+
+.num-input:disabled {
+  color: var(--fg-faint);
+}
+
+.pager-total {
+  color: var(--fg-faint);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ body */
+.body {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.stage {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-stage);
+  overflow: hidden;
+}
+
+.viewers {
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------- status + progress */
+.statusline {
+  flex: 0 0 auto;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  font-size: 11px;
+  color: var(--fg-faint);
+  background: var(--bg-stage);
+  overflow: hidden;
+}
+
+.status-spacer {
+  flex: 1 1 auto;
+}
+
+.status-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-item[hidden] {
+  display: none;
+}
+
+.mini-spinner {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.4px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-top-color: var(--accent);
+  animation: spin 700ms linear infinite;
+  flex: 0 0 auto;
+}
+
+/* the only chrome that ever uses the accent colour at rest */
+.progress-line {
+  flex: 0 0 auto;
+  height: var(--hairline-h);
+  background: transparent;
+  overflow: hidden;
+}
+
+.progress-line span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  opacity: 0.55;
+  transition: width var(--dur) var(--ease);
+}
+
+/* --------------------------------------------------------------- scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(130, 132, 138, 0.32);
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(130, 132, 138, 0.55);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ---------------------------------------------------------- empty state */
+/* No card, no border: just a quiet invitation in the middle of the paper. */
+.empty-state {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: auto;
+}
+
+.empty-card {
+  max-width: 460px;
+  text-align: center;
+}
+
+.empty-logo {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--fg-faint);
+}
+
+.empty-logo span {
+  font-weight: 600;
+  color: var(--fg-muted);
+  margin-left: 0.16em;
+}
+
+.empty-sub {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.empty-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.empty-recent {
+  margin-top: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.empty-hint {
+  margin-top: 18px;
+  font-size: 11px;
+}
+
+/* --------------------------------------------------------------- printing */
+@media print {
+  .chrome,
+  .sidebar,
+  .sidebar-resizer,
+  .statusline,
+  .progress-line,
+  .editor-bar,
+  .toasts {
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------------------------- interaction */
+/* Minimalism still owes the user feedback. These are the three cheap ones:
+   a keyboard-only focus ring, a consistent hover wash already defined above,
+   and a pressed state that is visibly different from hover. */
+:where(button, [role='button'], .tab, .chip-btn, .toggle-chip, .sidebar-title, .palette-item, .menu-item, .swatch):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* Chrome elements animate, page content never does: a moving page is worse
+   than an instant one. */
+.icon-btn,
+.tb-text,
+.tab,
+.chip-btn,
+.toggle-chip,
+.sidebar-title,
+.palette-item,
+.menu-item,
+.thumb,
+.outline-row,
+.bookmark-row,
+.annot-row {
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.icon-btn:active:not(:disabled),
+.tb-text:active:not(:disabled),
+.chip-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+/* the accent underline marks the active tab without adding a second surface */
+.tab.active {
+  position: relative;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 1px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+/* a badge on the title bar mark while any tab is loading */
+.brand-mark[data-busy='1']::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bg-chrome);
+  border-top-color: var(--accent);
+  background: var(--bg-chrome);
+  animation: spin 700ms linear infinite;
+}
+
+.brand {
+  position: relative;
+}
+
+/* respect the system "reduce motion" setting */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* the animation setting in the app maps onto this class */
+body.no-animation *,
+body.no-animation *::before,
+body.no-animation *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}

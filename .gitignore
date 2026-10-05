@@ -1,0 +1,16 @@
+﻿# build output and third-party runtimes: reproducible via tools\build.ps1 /
+# tools\sync-vendor.ps1, and far too large for a source repository
+_vendor/
+dist/
+dist-archive/
+
+# generated / test output
+artifacts/
+samples/
+.devtest/
+node_modules/
+*.log
+
+# OS noise
+Thumbs.db
+desktop.ini

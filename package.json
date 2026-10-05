@@ -1,0 +1,14 @@
+{
+  "name": "leeberty-pdf",
+  "productName": "LeebertyPDF",
+  "version": "1.0.0",
+  "description": "LeebertyPDF — 多功能桌面 PDF 阅读器与页面编辑器 (Electron + PDF.js)",
+  "main": "src/main/entry.js",
+  "author": "LeebertyPDF",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  }
+}
