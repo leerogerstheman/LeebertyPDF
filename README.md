@@ -255,20 +255,35 @@ powershell -ExecutionPolicy Bypass -File tools\install.ps1
 > 那 43 MB（24 页滚完后的 10 页缓冲）是 PDF.js 的正常缓存策略，不是泄漏。
 
 
-### 启动器：代理环境下的一个真崩溃（已修）
+### 启动器：两个都跟环境变量有关的坑（已修）
 
-`LeebertyPDF.exe` 现在通过 `cmd.exe` 的 `set "NAME=" & electron ...` 方式启动运行时，
-而不是用 `ProcessStartInfo.EnvironmentVariables` 过滤环境变量。
+`LeebertyPDF.exe` 是一个 winexe，自己 `CreateProcessW` 拉起 Electron，**不经过任何
+中间进程**。这中间踩了两个坑，都值得记下来。
 
-原因值得记一笔：.NET Framework 里 `ProcessStartInfo.EnvironmentVariables` 的 **getter**
-会用「大小写不敏感」的 `StringDictionary` 去装载「大小写敏感」的进程环境块，
-只要同一个变量以两种拼写存在（`NO_PROXY` 与 `no_proxy` —— 只要机器配了代理就常见），
-它就直接抛 `ArgumentException`。而且这个异常发生在 `Main` 里、早于任何窗口，
-表现是**双击图标毫无反应**（进程瞬间退出，连报错框都没有）。
+**坑一：双击没反应。** 最初用 `ProcessStartInfo.EnvironmentVariables` 过滤环境变量。
+.NET Framework 这个属性的 **getter** 会用「大小写不敏感」的 `StringDictionary`
+去装载「大小写敏感」的进程环境块 —— 只要同一个变量以两种拼写存在，它就抛
+`ArgumentException`。而机器上一旦配了代理，`NO_PROXY` 和 `no_proxy` 往往同时存在
+（这台机器上 `NO_PROXY`、`no_proxy`、`http_proxy`、`https_proxy`、`HTTP_PROXY`、
+`HTTPS_PROXY` 全都在）。异常发生在 `Main` 里、早于建窗口，表现为**双击毫无反应**。
 
-实测这台机器上 `NO_PROXY`、`no_proxy`、`http_proxy`、`https_proxy`、`HTTP_PROXY`、
-`HTTPS_PROXY` 全都在。用 `set "X="` 前缀不受这个地雷影响，而且同样能屏蔽
-`ELECTRON_RUN_AS_NODE` 之类的开发用开关。
+**坑二：绕开它的办法引入了新问题。** 改用 `cmd.exe /c set "NAME=" & electron ...`
+确实躲过了上面的异常，但 cmd 是控制台程序 —— 于是**多出一个 cmd 窗口**，
+而且 Electron 变成它的子进程，**关掉那个窗口就把阅读器一起关了**。
+
+**最终做法：** 直接 P/Invoke `CreateProcessW`，自己构造环境块 ——
+`NAME=VALUE` 逐个以 NUL 结尾、整块再以 NUL 收尾，按大小写不敏感排序并按名去重
+（kernel32 查环境变量用的是二分查找，顺序必须对），并传
+`CREATE_UNICODE_ENVIRONMENT` 标志。这样：
+
+- 没有 cmd、没有 conhost，**不会出现任何控制台窗口**；
+- Electron 是启动器的直接子进程，启动器建完进程就退出、立即关掉句柄，
+  阅读器因此**完全独立**，没有任何进程能连带把它结束掉；
+- 环境过滤反而更彻底了 —— 现在按名去重，`ELECTRON_RUN_AS_NODE`、`NODE_OPTIONS`
+  和全部 `LUMEN_*` 测试开关都会被剥掉（这 8 个变量同时污染时实测全部拦下）。
+
+参数按 `CommandLineToArgvW` 的规则重新引号（反斜杠连段 + 引号要按 2N+1 处理），
+所以 `C:\Users\Some Name\...` 这类路径和文件名带空格的文档都能正确传入。
 
 ### 交互与观感
 

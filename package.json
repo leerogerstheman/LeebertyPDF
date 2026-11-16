@@ -1,7 +1,7 @@
 {
   "name": "leeberty-pdf",
   "productName": "LeebertyPDF",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "LeebertyPDF — 多功能桌面 PDF 阅读器与页面编辑器 (Electron + PDF.js)",
   "main": "src/main/entry.js",
   "author": "LeebertyPDF",
